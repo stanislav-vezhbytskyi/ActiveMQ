@@ -5,9 +5,11 @@ import javax.jms.*;
 public class Consumer {
 
     private MessageConsumer consumer;
-    public Consumer(MessageConsumer messageConsumer){
+
+    public Consumer(MessageConsumer messageConsumer) {
         this.consumer = messageConsumer;
     }
+
     public POJO receive() throws JMSException {
         Message message = consumer.receive();
 
@@ -16,6 +18,7 @@ public class Consumer {
         }
         return null;
     }
+
     public void close() throws JMSException {
         consumer.close();
     }

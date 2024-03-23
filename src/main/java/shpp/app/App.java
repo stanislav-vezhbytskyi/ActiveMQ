@@ -1,9 +1,16 @@
 package shpp.app;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDate;
 import java.util.Properties;
+import java.util.Set;
 
 public class App {
     private static final int DEFAULT_NUMBER_SENT_MESSAGES = 100;
@@ -13,7 +20,26 @@ public class App {
     private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
     private static final JMSQueue queue = new JMSQueue();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IllegalAccessException {
+      /*  POJO pojo = new POJO();
+        pojo.count = 5;
+        pojo.EDDR = "fffffff";
+        pojo.name = "a";
+        pojo.createdAt = null;
+        IsContainSymbolValidator symbolValidator = new IsContainSymbolValidator();
+
+        System.out.println(symbolValidator.isValid(pojo));
+
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+
+        Validator validator = factory.getValidator();
+
+        System.out.println();
+
+        Set<ConstraintViolation<POJO>> violations = validator.validate(pojo);
+        for (ConstraintViolation<POJO> violation : violations) {
+            System.out.println(violation.getMessage());
+        }*/
         String queueName = "QUEUE_NAME";
         String clientID = "CLIENT_ID";
         String brokerURL = "DEFAULT_BROKER_URL";
@@ -43,13 +69,14 @@ public class App {
             messageGenerator.generateMessages(numberSentMessages, producer);
 
 
-            Consumer consumer = queue.createConsumer();
 
-            POJO pojo;
-            while ((pojo = consumer.receive()) != null) {
-                LOGGER.info(pojo.toString());
-            }
-            LOGGER.info("close all");
+
+
+
+            Consumer consumer = queue.createConsumer();
+            MessageReader messageReader = new MessageReader();
+            messageReader.readMessages(consumer);
+
             consumer.close();
             producer.close();
             queue.close();

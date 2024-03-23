@@ -1,7 +1,6 @@
 package shpp.app;
 
 import javax.jms.JMSException;
-import java.time.LocalDate;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -14,8 +13,8 @@ public class MessageGenerator {
 
         Stream.generate(POJO::new).peek(pojo->{
             pojo.setCount( dataGenerator.generateCount());
-            pojo.setEddr( new Random().nextInt()+"");
-            pojo.setName(dataGenerator.generateName(0,10));
+            pojo.setEDDR( new Random().nextInt()+"");
+            pojo.setName(dataGenerator.generateName(6,10));
             pojo.setCreatedAt(dataGenerator.generateDate());
         }).limit(numberMessages)
                 .forEach(pojo -> {
@@ -25,5 +24,11 @@ public class MessageGenerator {
                 throw new RuntimeException(e);
             }
         });
+
+        try {
+            producer.sendObject(null);
+        } catch (JMSException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
