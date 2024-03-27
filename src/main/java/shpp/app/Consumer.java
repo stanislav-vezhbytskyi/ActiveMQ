@@ -3,7 +3,6 @@ package shpp.app;
 import javax.jms.*;
 
 public class Consumer {
-
     private MessageConsumer consumer;
 
     public Consumer(MessageConsumer messageConsumer) {

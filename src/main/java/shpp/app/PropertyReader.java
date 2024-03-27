@@ -11,14 +11,15 @@ import java.util.Properties;
 
 public class PropertyReader {
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertyReader.class);
-    public Properties readProperties(String propertyFileName){
+
+    public Properties readProperties(String propertyFileName) {
         Properties properties = new Properties();
 
         InputStream is = ClassLoader.getSystemResourceAsStream(propertyFileName);
 
         LOGGER.info("Trying to read an external properties file");
         if (is != null) {
-            InputStreamReader inputStreamReader = new InputStreamReader(is,StandardCharsets.UTF_8);
+            InputStreamReader inputStreamReader = new InputStreamReader(is, StandardCharsets.UTF_8);
 
             LOGGER.info("external properties file exist");
             try {
@@ -26,7 +27,7 @@ public class PropertyReader {
 
                 LOGGER.info("external properties file has been read");
             } catch (IOException ex) {
-                LOGGER.error(ex.toString(),ex);
+                LOGGER.error(ex.toString(), ex);
             }
         } else {
             LOGGER.error("property file not found");

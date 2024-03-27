@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 //this is not a pojo :)
-public class POJO{
+public class POJO {
     @CsvBindByPosition(position = 0)
     @NotNull
     @Size(min = 7)

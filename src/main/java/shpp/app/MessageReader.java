@@ -63,13 +63,7 @@ public class MessageReader {
         try {
             csvWriter.writePOJOList(listWithCorrectPojo);
             csvWriter.writePOJOAndExceptionsList(listWithIncorrectPojo, listWithErrors);
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new RuntimeException(e);
-        } catch (CsvRequiredFieldEmptyException e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new RuntimeException(e);
-        } catch (CsvDataTypeMismatchException e) {
+        } catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
             LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }

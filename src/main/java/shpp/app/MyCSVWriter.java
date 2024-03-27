@@ -21,11 +21,11 @@ public class MyCSVWriter {
         System.out.println("THE FILE WAS WRITTEN SUCCESSFULLY");
     }
 
-    public void writePOJOAndExceptionsList(List<POJO> pojoList, List<String> exceptions) throws IOException{
+    public void writePOJOAndExceptionsList(List<POJO> pojoList, List<String> exceptions) throws IOException {
 
         CSVWriter writer = new CSVWriter(new FileWriter("mycsvFileWithincorrectData.csv"));
         for (int i = 0; i < pojoList.size() && i < exceptions.size(); i++) {
-            String[] tempRow = {pojoList.get(i).name, String.valueOf(pojoList.get(i).count),exceptions.get(i)};
+            String[] tempRow = {pojoList.get(i).name, String.valueOf(pojoList.get(i).count), exceptions.get(i)};
             writer.writeNext(tempRow);
         }
 

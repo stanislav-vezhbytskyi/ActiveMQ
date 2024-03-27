@@ -24,12 +24,13 @@ public class DataGenerator {
     public int generateCount() {
         return rand.nextInt(1000);
     }
-    public LocalDate generateDate(){
-        int year = rand.nextInt(36)+1;
-        int month = rand.nextInt(12)+1;
-        //todo: change this. Month can have more than 28 days
-        int dayOfMonth = rand.nextInt(28)+1;
 
-        return LocalDate.of(year,month,dayOfMonth);
+    public LocalDate generateDate() {
+        int year = rand.nextInt(36) + 1;
+        int month = rand.nextInt(12) + 1;
+        //todo: change this. Month can have more than 28 days
+        int dayOfMonth = rand.nextInt(28) + 1;
+
+        return LocalDate.of(year, month, dayOfMonth);
     }
 }

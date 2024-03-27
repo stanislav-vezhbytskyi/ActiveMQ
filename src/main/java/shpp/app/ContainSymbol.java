@@ -9,5 +9,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ContainSymbol {
     public String symbol() default "";
+
     public String message() default "The name should contain ";
 }

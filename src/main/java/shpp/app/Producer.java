@@ -10,6 +10,7 @@ public class Producer {
         this.session = session;
         this.producer = producer;
     }
+
     public void close() throws JMSException {
         producer.close();
     }
@@ -18,9 +19,4 @@ public class Producer {
         TextMessage textMessage = session.createTextMessage(message);
         producer.send(textMessage);
     }
-
-  /*  public void sendObject(POJO pojo) throws JMSException {
-        ObjectMessage objectMessage = session.createObjectMessage(pojo);
-        producer.send(objectMessage);
-    }*/
 }

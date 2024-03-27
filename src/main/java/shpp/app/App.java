@@ -37,7 +37,6 @@ public class App {
             poisonPill = Long.valueOf(properties.getProperty("poisonPill"));
         }
 
-
         try {
             queue.init(queueName, clientID, brokerURL);
 
@@ -46,21 +45,21 @@ public class App {
             long beforeGeneration = System.currentTimeMillis();
 
             MessageGenerator messageGenerator = new MessageGenerator();
-            messageGenerator.generateMessages(numberSentMessages, producer,poisonPill,POISON_PILL_MESSAGE);
+            messageGenerator.generateMessages(numberSentMessages, producer, poisonPill, POISON_PILL_MESSAGE);
 
-            LOGGER.info("Generation time {}",System.currentTimeMillis()-beforeGeneration);
+            LOGGER.info("Generation time {}", System.currentTimeMillis() - beforeGeneration);
 
             Consumer consumer = queue.createConsumer();
             MessageReader messageReader = new MessageReader();
-            messageReader.readMessages(consumer,POISON_PILL_MESSAGE);
+            messageReader.readMessages(consumer, POISON_PILL_MESSAGE);
             consumer.close();
             producer.close();
             queue.close();
         } catch (Exception e) {
-            LOGGER.error(e.toString(),e);
+            LOGGER.error(e.toString(), e);
         }
         long endTime = System.currentTimeMillis();
-        LOGGER.info(String.valueOf(endTime-startTime));
+        LOGGER.info(String.valueOf(endTime - startTime));
     }
 }
 

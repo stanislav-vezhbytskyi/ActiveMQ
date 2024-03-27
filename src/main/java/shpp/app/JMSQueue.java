@@ -40,7 +40,7 @@ public class JMSQueue {
     }
 
     public Producer createProducer() throws JMSException {
-        return new Producer(session.createProducer(destination),session);
+        return new Producer(session.createProducer(destination), session);
     }
 
     public Consumer createConsumer() throws JMSException {
