@@ -14,8 +14,13 @@ public class Producer {
         producer.close();
     }
 
-    public void sendObject(POJO pojo) throws JMSException {
+    public void sendString(String message) throws JMSException {
+        TextMessage textMessage = session.createTextMessage(message);
+        producer.send(textMessage);
+    }
+
+  /*  public void sendObject(POJO pojo) throws JMSException {
         ObjectMessage objectMessage = session.createObjectMessage(pojo);
         producer.send(objectMessage);
-    }
+    }*/
 }

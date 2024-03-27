@@ -1,5 +1,7 @@
 package shpp.app;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import jakarta.validation.ConstraintViolation;
@@ -15,48 +17,55 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class MessageReader {
+    private final String JSON_FORM = "{\"error\":[%s]}";
     private final Logger LOGGER = LoggerFactory.getLogger(MessageReader.class);
 
-    public void readMessages(Consumer consumer) throws JMSException, IllegalAccessException {
+    public void readMessages(Consumer consumer, String poisonPillMessage) throws JMSException, IllegalAccessException, JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
+
         List<POJO> listWithCorrectPojo = new LinkedList<>();
         List<POJO> listWithIncorrectPojo = new LinkedList<>();
         List<String> listWithErrors = new LinkedList<>();
 
         POJO pojo;
-        while ((pojo = consumer.receive()) != null) {
-            IsContainSymbolValidator isContainSymbolValidator = new IsContainSymbolValidator();
+        String tempJson = consumer.receive();
+        while (!tempJson.equals(poisonPillMessage)) {
+            pojo = objectMapper.readValue(tempJson, POJO.class);
+
+            ContainSymbolValidator isContainSymbolValidator = new ContainSymbolValidator();
             ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
             Validator validator = factory.getValidator();
 
             Set<ConstraintViolation<POJO>> violations = validator.validate(pojo);
 
-            LOGGER.info("{}", pojo);
+            LOGGER.debug("{}", pojo);
 
             if (violations.isEmpty() && isContainSymbolValidator.isValid(pojo)) {
                 listWithCorrectPojo.add(pojo);
             } else {
                 String errorMessage = "";
-                if(!violations.isEmpty()){
+                if (!violations.isEmpty()) {
                     errorMessage = violations.stream()
                             .map(ConstraintViolation::getMessage)
-                            .collect(Collectors.joining())+"; ";
+                            .collect(Collectors.joining()) + "; ";
                 }
-                if(!isContainSymbolValidator.isValid(pojo)){
-                    errorMessage+=isContainSymbolValidator.getErrorMessage();
+                if (!isContainSymbolValidator.isValid(pojo)) {
+                    errorMessage += isContainSymbolValidator.getErrorMessage();
                 }
-                listWithErrors.add(errorMessage);
+                listWithErrors.add(String.format(JSON_FORM, errorMessage));
                 listWithIncorrectPojo.add(pojo);
             }
+            tempJson = consumer.receive();
         }
         MyCSVWriter csvWriter = new MyCSVWriter();
 
         try {
             csvWriter.writePOJOList(listWithCorrectPojo);
-            csvWriter.writePOJOAndExceptionsList(listWithIncorrectPojo,listWithErrors);
+            csvWriter.writePOJOAndExceptionsList(listWithIncorrectPojo, listWithErrors);
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e);
-
         } catch (CsvRequiredFieldEmptyException e) {
             LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e);
@@ -64,7 +73,5 @@ public class MessageReader {
             LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
-
-
     }
 }

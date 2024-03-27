@@ -1,16 +1,9 @@
 package shpp.app;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
-import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.LocalDate;
 import java.util.Properties;
-import java.util.Set;
 
 public class App {
     private static final int DEFAULT_NUMBER_SENT_MESSAGES = 100;
@@ -19,30 +12,15 @@ public class App {
     private static final String QUEUE_NAME = "MyFirstActiveMQ";
     private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
     private static final JMSQueue queue = new JMSQueue();
+    private static final String POISON_PILL_MESSAGE = "THE END OF THE QUEUE";
 
-    public static void main(String[] args) throws IllegalAccessException {
-      /*  POJO pojo = new POJO();
-        pojo.count = 5;
-        pojo.EDDR = "fffffff";
-        pojo.name = "a";
-        pojo.createdAt = null;
-        IsContainSymbolValidator symbolValidator = new IsContainSymbolValidator();
+    public static void main(String[] args) {
+        long startTime = System.currentTimeMillis();
 
-        System.out.println(symbolValidator.isValid(pojo));
-
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-
-        Validator validator = factory.getValidator();
-
-        System.out.println();
-
-        Set<ConstraintViolation<POJO>> violations = validator.validate(pojo);
-        for (ConstraintViolation<POJO> violation : violations) {
-            System.out.println(violation.getMessage());
-        }*/
         String queueName = "QUEUE_NAME";
         String clientID = "CLIENT_ID";
         String brokerURL = "DEFAULT_BROKER_URL";
+        long poisonPill = 100;
 
         int numberSentMessages = DEFAULT_NUMBER_SENT_MESSAGES;
 
@@ -56,33 +34,33 @@ public class App {
             queueName = properties.getProperty("queueName");
             clientID = properties.getProperty("clientID");
             brokerURL = properties.getProperty("brokerURL");
+            poisonPill = Long.valueOf(properties.getProperty("poisonPill"));
         }
 
-        DataGenerator dataGenerator = new DataGenerator();
-        LOGGER.info(dataGenerator.generateName(5, 10));
+
         try {
             queue.init(queueName, clientID, brokerURL);
 
             Producer producer = queue.createProducer();
 
+            long beforeGeneration = System.currentTimeMillis();
+
             MessageGenerator messageGenerator = new MessageGenerator();
-            messageGenerator.generateMessages(numberSentMessages, producer);
+            messageGenerator.generateMessages(numberSentMessages, producer,poisonPill,POISON_PILL_MESSAGE);
 
-
-
-
-
+            LOGGER.info("Generation time {}",System.currentTimeMillis()-beforeGeneration);
 
             Consumer consumer = queue.createConsumer();
             MessageReader messageReader = new MessageReader();
-            messageReader.readMessages(consumer);
-
+            messageReader.readMessages(consumer,POISON_PILL_MESSAGE);
             consumer.close();
             producer.close();
             queue.close();
         } catch (Exception e) {
             LOGGER.error(e.toString(),e);
         }
+        long endTime = System.currentTimeMillis();
+        LOGGER.info(String.valueOf(endTime-startTime));
     }
 }
 

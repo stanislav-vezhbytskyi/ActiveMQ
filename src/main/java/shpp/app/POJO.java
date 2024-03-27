@@ -9,17 +9,26 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 //this is not a pojo :)
-public class POJO implements Serializable {
+public class POJO{
     @CsvBindByPosition(position = 0)
     @NotNull
     @Size(min = 7)
-    @IsContainSymbol(symbol = "a")
+    @ContainSymbol(symbol = "a")
     String name;
     @NotNull
     String EDDR;
     @CsvBindByPosition(position = 1)
     @Min(10)
     int count;
+
+    public String getEDDR() {
+        return EDDR;
+    }
+
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
+
     @NotNull
     LocalDate createdAt;
 

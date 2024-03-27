@@ -10,11 +10,11 @@ public class Consumer {
         this.consumer = messageConsumer;
     }
 
-    public POJO receive() throws JMSException {
+    public String receive() throws JMSException {
         Message message = consumer.receive();
 
-        if (message instanceof ObjectMessage) {
-            return (POJO) ((ObjectMessage) message).getObject();
+        if (message instanceof TextMessage) {
+            return ((TextMessage) message).getText();
         }
         return null;
     }
