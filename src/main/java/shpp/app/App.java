@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Properties;
 
 public class App {
-    private static final int DEFAULT_NUMBER_SENT_MESSAGES = 100;
+    private static final int DEFAULT_NUMBER_SENT_MESSAGES = 30;
     private static final String PROPERTY_FILE_NAME = "app.properties";
     private static final String CLIENT_ID = "ID:DESKTOP-ME97MLP-55962-1708879633133-0:1";
     private static final String QUEUE_NAME = "MyFirstActiveMQ";
@@ -20,7 +20,7 @@ public class App {
         String queueName = "QUEUE_NAME";
         String clientID = "CLIENT_ID";
         String brokerURL = "DEFAULT_BROKER_URL";
-        long poisonPill = 100;
+        long poisonPill = 1000000;
 
         int numberSentMessages = DEFAULT_NUMBER_SENT_MESSAGES;
 

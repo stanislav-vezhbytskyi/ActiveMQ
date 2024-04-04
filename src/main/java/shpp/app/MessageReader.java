@@ -28,14 +28,14 @@ public class MessageReader {
         List<POJO> listWithIncorrectPojo = new LinkedList<>();
         List<String> listWithErrors = new LinkedList<>();
 
+        ContainSymbolValidator isContainSymbolValidator = new ContainSymbolValidator();
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
         POJO pojo;
         String tempJson = consumer.receive();
         while (!tempJson.equals(poisonPillMessage)) {
             pojo = objectMapper.readValue(tempJson, POJO.class);
-
-            ContainSymbolValidator isContainSymbolValidator = new ContainSymbolValidator();
-            ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-            Validator validator = factory.getValidator();
 
             Set<ConstraintViolation<POJO>> violations = validator.validate(pojo);
 
@@ -61,10 +61,9 @@ public class MessageReader {
         MyCSVWriter csvWriter = new MyCSVWriter();
 
         try {
-            csvWriter.writePOJOList(listWithCorrectPojo);
-            csvWriter.writePOJOAndExceptionsList(listWithIncorrectPojo, listWithErrors);
+            csvWriter.writePOJOList(listWithCorrectPojo,"csvWithCorrectData");
+            csvWriter.writePOJOAndExceptionsList(listWithIncorrectPojo, listWithErrors,"csvWithIncorrectData");
         } catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
-            LOGGER.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }

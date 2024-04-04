@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
 //this is not a pojo :)
@@ -14,12 +13,12 @@ public class POJO {
     @NotNull
     @Size(min = 7)
     @ContainSymbol(symbol = "a")
-    String name;
+    private String name;
     @NotNull
-    String EDDR;
+    private String EDDR;
     @CsvBindByPosition(position = 1)
     @Min(10)
-    int count;
+    private int count;
 
     public String getEDDR() {
         return EDDR;
@@ -50,20 +49,24 @@ public class POJO {
     public POJO() {
     }
 
-    public void setName(String name) {
+    public POJO setName(String name) {
         this.name = name;
+        return this;
     }
 
-    public void setEDDR(String eddr) {
+    public POJO setEDDR(String eddr) {
         this.EDDR = eddr;
+        return this;
     }
 
-    public void setCount(int count) {
+    public POJO setCount(int count) {
         this.count = count;
+        return this;
     }
 
-    public void setCreatedAt(LocalDate createdAt) {
+    public POJO setCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
+        return this;
     }
 
     @Override
