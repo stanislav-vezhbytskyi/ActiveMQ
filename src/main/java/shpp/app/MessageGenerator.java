@@ -14,7 +14,8 @@ public class MessageGenerator {
         dataGenerator = new DataGenerator();
     }
 
-    public void generateMessages(int numberMessages, Producer producer, long poisonPill, String poisonPillMessage) {
+    public void generateMessages(int numberMessages, Producer producer,
+                                 long poisonPill, String poisonPillMessage) {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();

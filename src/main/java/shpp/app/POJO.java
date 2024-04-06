@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 //this is not a pojo :)
 public class POJO {
@@ -19,6 +20,21 @@ public class POJO {
     @CsvBindByPosition(position = 1)
     @Min(10)
     private int count;
+    @NotNull
+    LocalDate createdAt;
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, EDDR, count, createdAt);
+    }
+
+    public POJO(String name, String eddr, int count, LocalDate createdAt) {
+        this.name = name;
+        this.EDDR = eddr;
+        this.count = count;
+        this.createdAt = createdAt;
+    }
 
     public String getEDDR() {
         return EDDR;
@@ -28,22 +44,12 @@ public class POJO {
         return createdAt;
     }
 
-    @NotNull
-    LocalDate createdAt;
-
     public String getName() {
         return name;
     }
 
     public int getCount() {
         return count;
-    }
-
-    public POJO(String name, String eddr, int count, LocalDate createdAt) {
-        this.name = name;
-        this.EDDR = eddr;
-        this.count = count;
-        this.createdAt = createdAt;
     }
 
     public POJO() {
@@ -77,5 +83,13 @@ public class POJO {
                 ", count=" + count +
                 ", createdAt=" + createdAt +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof POJO)) return false;
+        POJO pojo = (POJO) o;
+        return count == pojo.count && Objects.equals(name, pojo.name) && Objects.equals(EDDR, pojo.EDDR) && Objects.equals(createdAt, pojo.createdAt);
     }
 }

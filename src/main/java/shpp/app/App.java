@@ -1,12 +1,18 @@
 package shpp.app;
 
+import com.opencsv.CSVWriter;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileWriter;
+import java.io.Writer;
 import java.util.Properties;
 
 public class App {
-    private static final int DEFAULT_NUMBER_SENT_MESSAGES = 30;
+    private static final int DEFAULT_NUMBER_SENT_MESSAGES = 10;
+
     private static final String PROPERTY_FILE_NAME = "app.properties";
     private static final String CLIENT_ID = "ID:DESKTOP-ME97MLP-55962-1708879633133-0:1";
     private static final String QUEUE_NAME = "MyFirstActiveMQ";
@@ -20,7 +26,7 @@ public class App {
         String queueName = "QUEUE_NAME";
         String clientID = "CLIENT_ID";
         String brokerURL = "DEFAULT_BROKER_URL";
-        long poisonPill = 1000000;
+        long poisonPill = 10;
 
         int numberSentMessages = DEFAULT_NUMBER_SENT_MESSAGES;
 
@@ -50,8 +56,31 @@ public class App {
             LOGGER.info("Generation time {}", System.currentTimeMillis() - beforeGeneration);
 
             Consumer consumer = queue.createConsumer();
-            MessageReader messageReader = new MessageReader();
-            messageReader.readMessages(consumer, POISON_PILL_MESSAGE);
+            MessageHandler messageHandler = new MessageHandler();
+            messageHandler.readMessages(consumer, POISON_PILL_MESSAGE);
+
+            Writer writer = new FileWriter("csvWithCorrectData");
+            StatefulBeanToCsv statefulBeanToCsv = new StatefulBeanToCsvBuilder(writer).build();
+            statefulBeanToCsv.write(messageHandler.getListWithCorrectPojo());
+
+
+            writer = new FileWriter("csvWithIncorrectData");
+            CSVWriter CSVWriter = new CSVWriter(writer);
+
+            try {
+                for (int i = 0; i < messageHandler.getListWithIncorrectPojo().size() &&
+                        i < messageHandler.getListWithErrors().size(); i++) {
+                    String[] tempRow = {messageHandler.getListWithIncorrectPojo().get(i).getName(),
+                            String.valueOf(messageHandler.getListWithIncorrectPojo().get(i).getCount()),
+                            messageHandler.getListWithErrors().get(i)};
+                    CSVWriter.writeNext(tempRow);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException();
+            }
+
+            writer.close();
+
             consumer.close();
             producer.close();
             queue.close();
