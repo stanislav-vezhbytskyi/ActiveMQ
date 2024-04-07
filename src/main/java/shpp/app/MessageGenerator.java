@@ -19,13 +19,12 @@ public class MessageGenerator {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
-        Random rand = new Random();
 
         long startTime = System.currentTimeMillis();
         Stream.generate(POJO::new)
                 .takeWhile(pojo -> (System.currentTimeMillis() - startTime) / 1000 < poisonPill)
                 .peek(pojo -> pojo.setCount(dataGenerator.generateCount())
-                        .setEDDR(rand.nextInt() + "")
+                        .setEDDR(dataGenerator.generateEDDR() + "")
                         .setName(dataGenerator.generateName(6, 10))
                         .setCreatedAt(dataGenerator.generateDate())).limit(numberMessages)
                 .forEach(pojo -> {

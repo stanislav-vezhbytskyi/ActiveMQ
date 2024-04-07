@@ -8,14 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.FileWriter;
 import java.io.Writer;
-import java.util.Properties;
 
 public class App {
-    private static final int DEFAULT_NUMBER_SENT_MESSAGES = 10;
-
     private static final String PROPERTY_FILE_NAME = "app.properties";
-    private static final String CLIENT_ID = "ID:DESKTOP-ME97MLP-55962-1708879633133-0:1";
-    private static final String QUEUE_NAME = "MyFirstActiveMQ";
     private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
     private static final JMSQueue queue = new JMSQueue();
     private static final String POISON_PILL_MESSAGE = "THE END OF THE QUEUE";
@@ -23,61 +18,38 @@ public class App {
     public static void main(String[] args) {
         long startTime = System.currentTimeMillis();
 
-        String queueName = "QUEUE_NAME";
-        String clientID = "CLIENT_ID";
-        String brokerURL = "DEFAULT_BROKER_URL";
-        long poisonPill = 10;
-
-        int numberSentMessages = DEFAULT_NUMBER_SENT_MESSAGES;
-
-        if (System.getProperty("N") != null) {
-            numberSentMessages = Integer.parseInt(System.getProperty("N"));
-        }
-
-        PropertyReader propertyReader = new PropertyReader();
-        Properties properties = propertyReader.readProperties(PROPERTY_FILE_NAME);
-        if (properties != null && !properties.isEmpty()) {
-            queueName = properties.getProperty("queueName");
-            clientID = properties.getProperty("clientID");
-            brokerURL = properties.getProperty("brokerURL");
-            poisonPill = Long.valueOf(properties.getProperty("poisonPill"));
-        }
+        ConfigManager configManager = new ConfigManager();
+        configManager.readConfiguration(PROPERTY_FILE_NAME);
 
         try {
-            queue.init(queueName, clientID, brokerURL);
+            queue.init(configManager.getQueueName(), configManager.getClientId(), configManager.getBrokerURL());
 
             Producer producer = queue.createProducer();
 
             long beforeGeneration = System.currentTimeMillis();
 
+            //generate messages
             MessageGenerator messageGenerator = new MessageGenerator();
-            messageGenerator.generateMessages(numberSentMessages, producer, poisonPill, POISON_PILL_MESSAGE);
-
+            messageGenerator.generateMessages(configManager.getNumberSentMessages(), producer,
+                    configManager.getPoisonPill(), POISON_PILL_MESSAGE);
             LOGGER.info("Generation time {}", System.currentTimeMillis() - beforeGeneration);
 
+            //read messages
             Consumer consumer = queue.createConsumer();
             MessageHandler messageHandler = new MessageHandler();
             messageHandler.readMessages(consumer, POISON_PILL_MESSAGE);
 
+
+            //write information to pojo
             Writer writer = new FileWriter("csvWithCorrectData");
             StatefulBeanToCsv statefulBeanToCsv = new StatefulBeanToCsvBuilder(writer).build();
             statefulBeanToCsv.write(messageHandler.getListWithCorrectPojo());
 
 
-            writer = new FileWriter("csvWithIncorrectData");
-            CSVWriter CSVWriter = new CSVWriter(writer);
+            MyCSVWriter myCSVWriter = new MyCSVWriter();
 
-            try {
-                for (int i = 0; i < messageHandler.getListWithIncorrectPojo().size() &&
-                        i < messageHandler.getListWithErrors().size(); i++) {
-                    String[] tempRow = {messageHandler.getListWithIncorrectPojo().get(i).getName(),
-                            String.valueOf(messageHandler.getListWithIncorrectPojo().get(i).getCount()),
-                            messageHandler.getListWithErrors().get(i)};
-                    CSVWriter.writeNext(tempRow);
-                }
-            } catch (Exception e) {
-                throw new RuntimeException();
-            }
+            myCSVWriter.writeIncorrectData(messageHandler.getListWithIncorrectPojo(),
+                    messageHandler.getListWithErrors(),new CSVWriter(new FileWriter("csvWithIncorrectData")));
 
             writer.close();
 

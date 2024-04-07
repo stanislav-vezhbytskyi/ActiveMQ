@@ -28,7 +28,7 @@ public class MessageHandler {
     private final ContainSymbolValidator containSymbolValidator;
     private ObjectMapper objectMapper;
     private List<POJO> listWithCorrectPojo;
-    private List<POJO> listWithIncorrectPojo ;
+    private List<POJO> listWithIncorrectPojo;
 
     private List<String> listWithErrors;
 
@@ -44,7 +44,7 @@ public class MessageHandler {
 
     public void readMessages(Consumer consumer, String poisonPillMessage) throws JMSException, IllegalAccessException, JsonProcessingException {
         String tempJson = consumer.receive();
-        while (!tempJson.equals(poisonPillMessage)) {
+        while (tempJson != null && !tempJson.equals(poisonPillMessage)) {
             POJO pojo = parseJsonToPOJO(tempJson);
             validateAndSeparate(pojo);
             LOGGER.info(tempJson);
@@ -83,9 +83,11 @@ public class MessageHandler {
     public List<POJO> getListWithCorrectPojo() {
         return listWithCorrectPojo;
     }
-    public List<POJO> getListWithIncorrectPojo(){
+
+    public List<POJO> getListWithIncorrectPojo() {
         return listWithIncorrectPojo;
     }
+
     public List<String> getListWithErrors() {
         return listWithErrors;
     }
