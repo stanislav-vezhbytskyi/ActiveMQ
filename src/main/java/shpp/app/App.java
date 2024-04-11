@@ -3,10 +3,14 @@ package shpp.app;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jms.JMSException;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Writer;
 
 public class App {
@@ -40,8 +44,8 @@ public class App {
             messageHandler.readMessages(consumer, POISON_PILL_MESSAGE);
 
 
-            //write information to pojo
-            Writer writer = new FileWriter("csvWithCorrectData");
+            //write information about pojo to files
+            Writer writer = new FileWriter("out/csvWithCorrectData");
             StatefulBeanToCsv statefulBeanToCsv = new StatefulBeanToCsvBuilder(writer).build();
             statefulBeanToCsv.write(messageHandler.getListWithCorrectPojo());
 
@@ -49,13 +53,16 @@ public class App {
             MyCSVWriter myCSVWriter = new MyCSVWriter();
 
             myCSVWriter.writeIncorrectData(messageHandler.getListWithIncorrectPojo(),
-                    messageHandler.getListWithErrors(),new CSVWriter(new FileWriter("csvWithIncorrectData")));
+                    messageHandler.getListWithErrors(),new CSVWriter(new FileWriter("out/csvWithIncorrectData")));
 
             writer.close();
-
             consumer.close();
             producer.close();
             queue.close();
+        } catch (CsvRequiredFieldEmptyException | JMSException | CsvDataTypeMismatchException | IOException |
+                 IllegalAccessException e) {
+            LOGGER.error(e.toString(),e);
+            throw new RuntimeException(e);
         } catch (Exception e) {
             LOGGER.error(e.toString(), e);
         }
@@ -63,4 +70,3 @@ public class App {
         LOGGER.info(String.valueOf(endTime - startTime));
     }
 }
-
