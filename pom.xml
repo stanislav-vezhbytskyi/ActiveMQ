@@ -1,171 +1,248 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>shpp.app</groupId>
-  <artifactId>JMSProducer</artifactId>
- <version>1.0</version>
-  <packaging>jar</packaging>
+    <groupId>shpp.app</groupId>
+    <artifactId>JMSProducer</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
 
-  <name>JMSProducer</name>
-  <url>http://maven.apache.org</url>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-
-  <dependencies>
-    <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.datatype</groupId>
-      <artifactId>jackson-datatype-jsr310</artifactId>
-      <version>2.16.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <version>5.11.0</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.fasterxml.jackson.dataformat</groupId>
-      <artifactId>jackson-dataformat-xml</artifactId>
-      <version>2.16.0</version>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/com.opencsv/opencsv -->
-    <!-- https://mvnrepository.com/artifact/com.opencsv/opencsv -->
-    <dependency>
-      <groupId>com.opencsv</groupId>
-      <artifactId>opencsv</artifactId>
-      <version>5.7.1</version>
-    </dependency>
+    <name>JMSProducer</name>
+    <url>http://maven.apache.org</url>
 
 
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jackson.databind.version>2.15.3</jackson.databind.version>
+        <jackson.dataformat.xml.version>2.15.3</jackson.dataformat.xml.version>
+        <jackson-datatype-jsr310>2.16.1</jackson-datatype-jsr310>
+        <jackson-datatype-jdk8>2.16.1</jackson-datatype-jdk8>
+        <logback.core.version>1.4.14</logback.core.version>
+        <jakarta.validation-api.version>3.0.2</jakarta.validation-api.version>
+        <hibernate-validator.version>8.0.1.Final</hibernate-validator.version>
+        <hibernate-validator-annotation-processor.version>8.0.1.Final</hibernate-validator-annotation-processor.version>
+        <glassfish.expressly.version>5.0.0</glassfish.expressly.version>
+        <commons-csv.version>1.10.0</commons-csv.version>
+        <logback.classic.version>1.4.14</logback.classic.version>
+        <activemq-broker>5.18.3</activemq-broker>
+        <activemq-pool>5.18.3</activemq-pool>
+        <junit.version>5.10.2</junit.version>
+        <mockito-core>5.11.0</mockito-core>
+        <shade.plugin.version>3.5.1</shade.plugin.version>
+        <mockito-junit-jupiter>5.11.0</mockito-junit-jupiter>
+        <commons-io>2.15.1</commons-io>
+        <org.jetbrains.annotations>24.1.0</org.jetbrains.annotations>
+        <!--        <skipTests>true</skipTests>-->
+    </properties>
 
-    <dependency>
-      <groupId>org.apache.activemq</groupId>
-      <artifactId>activemq-core</artifactId>
-      <version>5.7.0</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api -->
-    <dependency>
-      <groupId>jakarta.validation</groupId>
-      <artifactId>jakarta.validation-api</artifactId>
-      <version>3.0.0</version>
-    </dependency>
+    <dependencies>
+        <!--         https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io}</version>
+        </dependency>
 
-    <!-- Jakarta Expression Language -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate-validator.version}</version>
+        </dependency>
 
-    <!-- Interface -->
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.el</artifactId>
+            <version>5.0.0-M1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>${commons-csv.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-pool</artifactId>
+            <version>${activemq-pool}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson-datatype-jsr310}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito-junit-jupiter}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>5.7.1</version>
+        </dependency>
 
-    <!-- https://mvnrepository.com/artifact/jakarta.el/jakarta.el-api -->
-    <dependency>
-      <groupId>jakarta.el</groupId>
-      <artifactId>jakarta.el-api</artifactId>
-      <version>4.0.0</version>
-    </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-    <!-- Implementation -->
+    <!-- <dependencies>
+         &lt;!&ndash; https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 &ndash;&gt;
+         <dependency>
+             <groupId>com.fasterxml.jackson.datatype</groupId>
+             <artifactId>jackson-datatype-jsr310</artifactId>
+             <version>2.16.1</version>
+         </dependency>
 
-    <!-- https://mvnrepository.com/artifact/org.glassfish/jakarta.el -->
-    <dependency>
-      <groupId>org.glassfish</groupId>
-      <artifactId>jakarta.el</artifactId>
-      <version>4.0.1</version>
-    </dependency>
-    <!-- Implementation -->
+         <dependency>
+             <groupId>org.mockito</groupId>
+             <artifactId>mockito-core</artifactId>
+             <version>5.11.0</version>
+             <scope>test</scope>
+         </dependency>
 
-    <!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
-    <dependency>
-      <groupId>org.hibernate.validator</groupId>
-      <artifactId>hibernate-validator</artifactId>
-      <version>7.0.1.Final</version>
-    </dependency>
+         <dependency>
+             <groupId>com.fasterxml.jackson.dataformat</groupId>
+             <artifactId>jackson-dataformat-xml</artifactId>
+             <version>2.16.0</version>
+         </dependency>
+
+         &lt;!&ndash; https://mvnrepository.com/artifact/com.opencsv/opencsv &ndash;&gt;
+         &lt;!&ndash; https://mvnrepository.com/artifact/com.opencsv/opencsv &ndash;&gt;
+         <dependency>
+             <groupId>com.opencsv</groupId>
+             <artifactId>opencsv</artifactId>
+             <version>5.7.1</version>
+         </dependency>
 
 
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <version>1.7.36</version>
-    </dependency>
+         <dependency>
+             <groupId>org.apache.activemq</groupId>
+             <artifactId>activemq-core</artifactId>
+             <version>5.7.0</version>
+         </dependency>
+         &lt;!&ndash; https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api &ndash;&gt;
+         <dependency>
+             <groupId>jakarta.validation</groupId>
+             <artifactId>jakarta.validation-api</artifactId>
+             <version>3.0.0</version>
+         </dependency>
 
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>1.4.7</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13.1</version>
-      <scope>test</scope>
-    </dependency>
+         &lt;!&ndash; https://mvnrepository.com/artifact/org.glassfish/jakarta.el &ndash;&gt;
+         <dependency>
+             <groupId>org.glassfish</groupId>
+             <artifactId>jakarta.el</artifactId>
+             <version>4.0.1</version>
+         </dependency>
+         &lt;!&ndash; Implementation &ndash;&gt;
 
-  </dependencies>
+         &lt;!&ndash; https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator &ndash;&gt;
+         <dependency>
+             <groupId>org.hibernate.validator</groupId>
+             <artifactId>hibernate-validator</artifactId>
+             <version>7.0.1.Final</version>
+         </dependency>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>3.3.0</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <transformers>
-                <transformer
-                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>shpp.app.App</mainClass>
-                  <manifestEntries>
-                    <Class-Path>config/</Class-Path>
-                  </manifestEntries>
-                </transformer>
-              </transformers>
-              <filters>
-                <filter>
-                  <artifact>*:*</artifact>
-                  <excludes>
-                    <exclude>app.properties</exclude>
-                  </excludes>
-                </filter>
-              </filters>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>3.2.0</version>
-        <executions>
-          <execution>
-            <id>copy-resources</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/config</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>src/main/resources</directory>
-                  <filtering>true</filtering>
-                  <includes>
-                    <include>*.properties</include>
-                  </includes>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+
+         <dependency>
+             <groupId>org.slf4j</groupId>
+             <artifactId>slf4j-simple</artifactId>
+             <version>1.7.36</version>
+         </dependency>
+
+         <dependency>
+             <groupId>ch.qos.logback</groupId>
+             <artifactId>logback-classic</artifactId>
+             <version>1.4.7</version>
+         </dependency>
+         <dependency>
+             <groupId>junit</groupId>
+             <artifactId>junit</artifactId>
+             <version>4.13.1</version>
+             <scope>test</scope>
+         </dependency>
+
+     </dependencies>-->
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>shpp.app.App</mainClass>
+                                    <manifestEntries>
+                                        <Class-Path>config/</Class-Path>
+                                    </manifestEntries>
+                                </transformer>
+                            </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>**/app.properties</exclude>
+                                        <eclude>**/logback.xml</eclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/config</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>*.properties</include>
+                                        <include>*.xml</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
