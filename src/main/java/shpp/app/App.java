@@ -45,7 +45,7 @@ public class App {
 
 
             //write information about pojo to files
-            Writer writer = new FileWriter("out/csvWithCorrectData");
+            Writer writer = new FileWriter("csvWithCorrectData");
             StatefulBeanToCsv statefulBeanToCsv = new StatefulBeanToCsvBuilder(writer).build();
             statefulBeanToCsv.write(messageHandler.getListWithCorrectPojo());
 
@@ -53,7 +53,8 @@ public class App {
             MyCSVWriter myCSVWriter = new MyCSVWriter();
 
             myCSVWriter.writeIncorrectData(messageHandler.getListWithIncorrectPojo(),
-                    messageHandler.getListWithErrors(),new CSVWriter(new FileWriter("out/csvWithIncorrectData")));
+                    messageHandler.getListWithErrors(),
+                    new CSVWriter(new FileWriter("csvWithIncorrectData")));
 
             writer.close();
             consumer.close();

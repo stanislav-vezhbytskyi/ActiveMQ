@@ -8,7 +8,6 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Objects;
 
-//this is not a pojo :)
 public class POJO {
     @CsvBindByPosition(position = 0)
     @NotNull
